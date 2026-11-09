@@ -10,6 +10,7 @@ const openingScreen = document.getElementById("opening-screen");
 const particleMessage = document.getElementById("particleMessage");
 const messageScreen = document.getElementById("message-screen");
 const soundToggle = document.getElementById("soundToggle");
+const backgroundMusic = document.getElementById("backgroundMusic");
 
 if (!canvas) {
     throw new Error("particleCanvas was not found in index.html");
@@ -17,6 +18,81 @@ if (!canvas) {
 
 function random(min, max) {
     return Math.random() * (max - min) + min;
+}
+
+// ======================================================
+// GOLDEN BROWN — BACKGROUND MUSIC
+// ======================================================
+
+let soundEnabled = true;
+let musicStarted = false;
+
+if (backgroundMusic) {
+    backgroundMusic.loop = true;
+    backgroundMusic.volume = 1;
+    backgroundMusic.preload = "auto";
+}
+
+function updateSoundButton() {
+    if (!soundToggle) return;
+
+    soundToggle.textContent = soundEnabled ? "♫" : "♪";
+
+    soundToggle.setAttribute(
+        "aria-label",
+        soundEnabled ? "Turn sound off" : "Turn sound on"
+    );
+
+    soundToggle.title = soundEnabled ? "Sound ON" : "Sound OFF";
+}
+
+function startAudio() {
+    if (!backgroundMusic || !soundEnabled) return;
+
+    backgroundMusic.muted = false;
+    backgroundMusic.volume = 1;
+
+    // Start immediately from the user's button click.
+    const playback = backgroundMusic.play();
+
+    if (playback) {
+        playback
+            .then(() => {
+                musicStarted = true;
+                soundEnabled = true;
+                updateSoundButton();
+
+                console.log("Golden Brown music is playing.");
+            })
+            .catch(error => {
+                console.error("Music playback failed:", error);
+
+                updateSoundButton();
+            });
+    }
+}
+
+function stopAudio() {
+    if (!backgroundMusic) return;
+
+    backgroundMusic.pause();
+    soundEnabled = false;
+
+    updateSoundButton();
+}
+
+// Sound button
+if (soundToggle) {
+    soundToggle.addEventListener("click", () => {
+
+        if (soundEnabled) {
+            stopAudio();
+        } else {
+            soundEnabled = true;
+            startAudio();
+        }
+
+    });
 }
 
 // ======================================================
@@ -161,191 +237,6 @@ glowLight.position.set(0, 0, 12);
 scene.add(glowLight);
 
 // ======================================================
-// ROMANTIC PIANO SOUNDTRACK
-// ======================================================
-
-let audioContext = null;
-let masterGain = null;
-let audioStarted = false;
-let soundEnabled = true;
-let musicTimer = null;
-let activeAudioNodes = [];
-
-const pianoMelody = [
-    [261.63, 329.63, 392.00],
-    [293.66, 349.23, 440.00],
-    [246.94, 329.63, 392.00],
-    [261.63, 329.63, 392.00]
-];
-
-let chordIndex = 0;
-
-function playPianoNote(frequency, start, duration, volume) {
-    if (!audioContext || !masterGain || !soundEnabled) return;
-
-    const oscillator = audioContext.createOscillator();
-    const gain = audioContext.createGain();
-    const filter = audioContext.createBiquadFilter();
-
-    oscillator.type = "sine";
-    oscillator.frequency.value = frequency;
-
-    filter.type = "lowpass";
-    filter.frequency.value = 1800;
-
-    gain.gain.setValueAtTime(0.0001, start);
-    gain.gain.exponentialRampToValueAtTime(
-        volume,
-        start + 0.08
-    );
-
-    gain.gain.exponentialRampToValueAtTime(
-        0.0001,
-        start + duration
-    );
-
-    oscillator.connect(filter);
-    filter.connect(gain);
-    gain.connect(masterGain);
-
-    oscillator.start(start);
-    oscillator.stop(start + duration + 0.1);
-
-    activeAudioNodes.push(oscillator);
-
-    oscillator.onended = () => {
-        activeAudioNodes = activeAudioNodes.filter(
-            node => node !== oscillator
-        );
-    };
-}
-
-function playPianoChord() {
-    if (!audioContext || !soundEnabled) return;
-
-    const now = audioContext.currentTime;
-    const chord = pianoMelody[chordIndex];
-
-    chordIndex = (chordIndex + 1) % pianoMelody.length;
-
-    // Soft chord notes
-    chord.forEach((frequency, index) => {
-        playPianoNote(
-            frequency,
-            now + index * 0.12,
-            3.8,
-            0.045
-        );
-    });
-
-    // Gentle melody
-    const melody = [
-        chord[2] * 2,
-        chord[1] * 2,
-        chord[0] * 2,
-        chord[1] * 2
-    ];
-
-    melody.forEach((frequency, index) => {
-        playPianoNote(
-            frequency,
-            now + 0.8 + index * 0.75,
-            2.2,
-            0.018
-        );
-    });
-
-    // Warm bass
-    playPianoNote(
-        chord[0] / 2,
-        now,
-        4.5,
-        0.035
-    );
-}
-
-function startAudio() {
-    if (audioStarted) {
-        if (audioContext.state === "suspended") {
-            audioContext.resume();
-        }
-        return;
-    }
-
-    const AudioContextClass =
-        window.AudioContext || window.webkitAudioContext;
-
-    if (!AudioContextClass) {
-        console.warn("Web Audio is not supported.");
-        return;
-    }
-
-    audioContext = new AudioContextClass();
-
-    masterGain = audioContext.createGain();
-    masterGain.gain.value = 0.65;
-
-    const compressor = audioContext.createDynamicsCompressor();
-
-    compressor.threshold.value = -24;
-    compressor.knee.value = 20;
-    compressor.ratio.value = 4;
-    compressor.attack.value = 0.02;
-    compressor.release.value = 0.3;
-
-    masterGain.connect(compressor);
-    compressor.connect(audioContext.destination);
-
-    audioStarted = true;
-
-    audioContext.resume();
-
-    playPianoChord();
-
-    musicTimer = setInterval(() => {
-        if (soundEnabled) {
-            playPianoChord();
-        }
-    }, 5000);
-}
-
-// ======================================================
-// SOUND BUTTON
-// ======================================================
-
-function updateSoundButton() {
-    if (!soundToggle) return;
-
-    soundToggle.textContent = soundEnabled ? "♫" : "♪";
-}
-
-if (soundToggle) {
-    soundToggle.addEventListener("click", () => {
-        soundEnabled = !soundEnabled;
-
-        if (soundEnabled) {
-            startAudio();
-
-            if (masterGain) {
-                masterGain.gain.setTargetAtTime(
-                    0.65,
-                    audioContext.currentTime,
-                    0.5
-                );
-            }
-        } else if (masterGain) {
-            masterGain.gain.setTargetAtTime(
-                0,
-                audioContext.currentTime,
-                0.5
-            );
-        }
-
-        updateSoundButton();
-    });
-}
-
-// ======================================================
 // HEART EXPLOSION
 // ======================================================
 
@@ -397,6 +288,7 @@ function updateParticles(time) {
             velocities[index] *= 0.985;
             velocities[index + 1] *= 0.985;
             velocities[index + 2] *= 0.985;
+
         } else {
             const pulse = 1 + Math.sin(time * 2.2) * 0.035;
 
@@ -664,6 +556,7 @@ function startExperience() {
 
     experienceStarted = true;
 
+    // Start Golden Brown immediately from the user's click.
     startAudio();
 
     if (openingScreen) {
