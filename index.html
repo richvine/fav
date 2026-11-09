@@ -26,12 +26,18 @@
 <body>
 
     <div id="universe"></div>
-
     <canvas id="particleCanvas"></canvas>
 
     <div class="vignette"></div>
-
     <div class="ambient-glow"></div>
+
+    <!-- BACKGROUND MUSIC -->
+    <audio
+        id="backgroundMusic"
+        src="music.mp3"
+        loop
+        preload="auto">
+    </audio>
 
     <div id="opening-screen">
 
@@ -115,9 +121,10 @@
 
     </div>
 
+    <!-- SOUND CONTROL -->
     <div id="sound-control">
-        <button id="soundToggle" aria-label="Toggle sound">
-            ♫
+        <button id="soundToggle" aria-label="Turn sound off">
+            ♫ SOUND ON
         </button>
     </div>
 
@@ -129,4 +136,4 @@
     <script type="module" src="script.js"></script>
 
 </body>
-</html>
+</html>   
