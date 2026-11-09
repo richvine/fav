@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#08030d">
+
+    <title>Dear Favour ❤️</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Great+Vibes&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="style.css">
+
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"
+        }
+    }
+    </script>
+</head>
+
+<body>
+
+    <div id="universe"></div>
+
+    <canvas id="particleCanvas"></canvas>
+
+    <div class="vignette"></div>
+
+    <div class="ambient-glow"></div>
+
+    <div id="opening-screen">
+
+        <div class="opening-content">
+
+            <div class="tiny-star">✦</div>
+
+            <p class="eyebrow">A LITTLE SOMETHING FROM MY HEART</p>
+
+            <h1>Dear <span>Favour</span></h1>
+
+            <p class="opening-subtitle">
+                Some people make the world a little more beautiful
+                just by being in it.
+            </p>
+
+            <button id="beginExperience">
+                <span>ENTER MY HEART</span>
+                <span class="button-arrow">→</span>
+            </button>
+
+            <p class="bottom-note">MADE WITH LOVE ♥</p>
+
+        </div>
+
+    </div>
+
+    <div id="particleMessage">
+
+        <p class="message-eyebrow">A NAME THAT DESERVES TO SHINE</p>
+
+        <h2>FAVOUR</h2>
+
+    </div>
+
+    <div id="message-screen">
+
+        <div class="message-container">
+
+            <div class="message-decoration">✦</div>
+
+            <p class="message-eyebrow">FROM THE HEART</p>
+
+            <h2>For You, Favour</h2>
+
+            <div class="message-divider">
+                <span></span>
+                ♥
+                <span></span>
+            </div>
+
+            <p class="main-message">
+                Favour, I hope you never forget how special you are.
+
+                Sometimes words aren't enough to explain how much
+                someone means to you, but I hope these little words
+                remind you that you matter.
+
+                Life won't always be easy, and there may be days
+                when you question your worth or wonder if anyone
+                truly appreciates you.
+
+                But please never see yourself only through the
+                difficult moments you've experienced.
+
+                You deserve genuine happiness, beautiful memories,
+                peace of mind, and a love that never makes you
+                question your value.
+
+                Thank you for being you. I'm genuinely grateful
+                you're part of my life.
+
+                You are appreciated, you are valued, and you are loved.
+            </p>
+
+            <div class="closing-heart">♥</div>
+
+            <p class="closing-message">Always remember that.</p>
+
+        </div>
+
+    </div>
+
+    <div id="sound-control">
+        <button id="soundToggle" aria-label="Toggle sound">
+            ♫
+        </button>
+    </div>
+
+    <div id="loading-screen">
+        <div class="loading-heart">♥</div>
+        <p>Preparing something special...</p>
+    </div>
+
+    <script type="module" src="script.js"></script>
+
+</body>
+</html>
